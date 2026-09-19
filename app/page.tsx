@@ -50,14 +50,14 @@ const skillGroups = [
     label: 'Backend',
     items: ['Node.js', 'Express.js', 'FastAPI', 'REST APIs', 'JWT', 'OAuth 2.0'],
   },
-  { label: 'Databases', items: ['MongoDB', 'PostgreSQL'] },
+  { label: 'Databases', items: ['MongoDB', 'PostgreSQL', 'MySQL', 'QdrantDB'] },
   {
     label: 'AI / GenAI',
-    items: ['RAG', 'LangChain', 'LangGraph', 'Vector Databases', 'OpenAI APIs', 'Gemini APIs'],
+    items: ['RAG', 'Agentic AI', 'LangChain', 'LangGraph', 'Vector Databases', 'OpenAI SDK', 'OpenCode', 'Cursor'],
   },
   {
     label: 'DevOps & Tools',
-    items: ['Docker', 'AWS ECS Fargate', 'GitHub Actions', 'GitHub', 'Postman'],
+    items: ['Docker', 'AWS', 'Azure', 'Vercel', 'GitHub Actions', 'GitHub', 'Postman'],
   },
 ];
 
@@ -69,6 +69,11 @@ const projects = [
     description:
       'A role-based e-commerce marketplace with JWT authentication and RBAC, supporting separate buyer and seller workflows for product, order, and account operations.',
     stack: ['React', 'JavaScript', 'Node.js', 'Express', 'MongoDB'],
+    links: {
+      github: 'https://github.com/saayush615/Ecobazar',
+      live: 'https://ecobazar-eta-fawn.vercel.app/',
+      demo: 'https://youtu.be/EXLMyz3QNQg?si=LAcRT2BUiHEGEDH0',
+    },
   },
   {
     number: '02',
@@ -76,9 +81,20 @@ const projects = [
     subtitle: 'Internal Knowledge Assistant',
     description:
       'An AI-powered assistant that separates web, API gateway, and AI service layers, with secure document retrieval and grounded answers from source documents.',
-    stack: ['Next.js', 'TypeScript', 'Node.js', 'FastAPI', 'Python'],
+    stack: ['Next.js', 'TypeScript', 'Node.js', 'FastAPI', 'Python', 'LangGraph', 'QdrantDB'],
+    links: {
+      github: 'https://github.com/saayush615/DevDocs',
+      live: 'in-progress',
+      demo: 'in-progress',
+    },
   },
 ];
+
+const projectLinkDefs = [
+  { key: 'github', icon: Github, label: 'GitHub' },
+  { key: 'live', icon: ExternalLink, label: 'live preview' },
+  { key: 'demo', icon: Youtube, label: 'demo video' },
+] as const;
 
 function FadeIn({ children }: { children: React.ReactNode }) {
   const reduceMotion = useReducedMotion();
@@ -252,8 +268,9 @@ function ProfileColumn() {
         </div>
         <ul className="experience-list">
           <li>Implemented TanStack Query for server-state management and client-side caching.</li>
-          <li>Optimized API responses and reduced unnecessary requests during user input.</li>
-          <li>Created a configurable event-driven rules engine for CRM workflows.</li>
+          <li>Optimized search performance in InstaMonitor by implementing debouncing for name and asset queries.</li>
+          <li>Implemented number masking in CRM using Ozonetel, enabling secure agent-to-customer calling without exposing real phone numbers.</li>
+          <li>Designed an event-driven rules engine for CRM, enabling automated actions based on configurable trigger conditions.</li>
         </ul>
       </div>
 
@@ -277,9 +294,23 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
       <div className="project-card-top">
         <span className="mono text-[11px] text-white/35">{project.number}</span>
         <div className="project-links" aria-label={`${project.name} links`}>
-          <a href="https://github.com/saayush615" target="_blank" rel="noreferrer" aria-label={`${project.name} GitHub`}><Github size={15} /></a>
-          <a href="#now" aria-label={`${project.name} live preview`}><ExternalLink size={15} /></a>
-          <a href="#writing" aria-label={`${project.name} demo video`}><Youtube size={15} /></a>
+          {projectLinkDefs.map(({ key, icon: Icon, label }) => {
+            const link = project.links[key];
+            return link === 'in-progress' ? (
+              <span
+                key={key}
+                className="project-link-inprogress"
+                aria-label={`${project.name} ${label} in progress`}
+                title={`${label} — in progress`}
+              >
+                <Icon size={15} />
+              </span>
+            ) : (
+              <a key={key} href={link} target="_blank" rel="noreferrer" aria-label={`${project.name} ${label}`}>
+                <Icon size={15} />
+              </a>
+            );
+          })}
         </div>
       </div>
       <h3 className="project-title">{project.name} <span>— {project.subtitle}</span></h3>
@@ -320,16 +351,16 @@ function ContentColumn() {
           <div className="section-label"><span>#</span>writing</div>
           <div className="article-list">
             {[
-              ['Building a Production-Ready RAG Pipeline', 'AI / GenAI'],
-              ['A Practical Guide to Object-Oriented Programming', 'JavaScript'],
-              ['Git & GitHub: The Workflow That Scales', 'Tools'],
+              ['Computer Networking 101: The Digital Superhighway Explained', 'https://dev.to/singhaayush/computer-networking-101-the-digital-superhighway-explained-k1k'],
+              ['Getting Started with Git and GitHub: A Beginner\'s Guide', 'https://dev.to/singhaayush/getting-started-with-git-and-github-a-beginners-guide-5emi'],
+              ['Unlocking the Power of OOP in Java: A Beginner\'s Guide', 'https://dev.to/singhaayush/unlocking-the-power-of-oop-in-java-a-beginners-guide-k68'],
             ].map(([title, tag]) => (
-              <a href="https://dev.to/shingaayush" target="_blank" rel="noreferrer" key={title} className="article-link">
-                <span>{title}</span><span className="article-tag">{tag}</span><ArrowUpRight size={14} />
+              <a href={tag} target="_blank" rel="noreferrer" key={title} className="article-link">
+                <span>{title}</span><ArrowUpRight size={14} />
               </a>
             ))}
           </div>
-          <UnderlineLink href="https://dev.to/shingaayush" external>View all articles on dev.to <span aria-hidden="true">→</span></UnderlineLink>
+          <UnderlineLink href="https://dev.to/singhaayush" external>View all articles on dev.to <span aria-hidden="true">→</span></UnderlineLink>
         </div>
       </FadeIn>
 
@@ -351,7 +382,7 @@ export default function Home() {
       <SocialRail />
       <ProfileColumn />
       <ContentColumn />
-      <a className="quick-call" href="https://cal.com" target="_blank" rel="noreferrer"><PhoneCall size={14} /> Quick Call?</a>
+      {/* <a className="quick-call" href="https://cal.com" target="_blank" rel="noreferrer"><PhoneCall size={14} /> Quik Call?</a> */}
     </div>
   );
 }
